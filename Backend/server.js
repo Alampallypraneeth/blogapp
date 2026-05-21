@@ -110,10 +110,11 @@ app.get("/auth/google/callback",
       { expiresIn: "24h" }
     );
 
+    const isProd = process.env.NODE_ENV === "production" || (process.env.FRONTEND_URL && !process.env.FRONTEND_URL.includes("localhost"));
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "lax",
-      secure: false,
+      sameSite: isProd ? "none" : "lax",
+      secure: isProd,
     });
 
     // Redirect back to frontend based on role

@@ -69,10 +69,11 @@ userRoute.post("/login", async (req, res) => {
   try {
     const result = await authenticate(req.body);
 
+    const isProd = process.env.NODE_ENV === "production" || (process.env.FRONTEND_URL && !process.env.FRONTEND_URL.includes("localhost"));
     res.cookie("token", result.token, {
       httpOnly: true,
-      sameSite: "lax",
-      secure: false,
+      sameSite: isProd ? "none" : "lax",
+      secure: isProd,
     });
 
     res.status(200).json({

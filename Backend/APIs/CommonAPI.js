@@ -41,10 +41,11 @@ commonRouter.post("/login", async (req, res) => {
 
     const { token, user } = await authenticate(userCred);
 
+    const isProd = process.env.NODE_ENV === "production" || (process.env.FRONTEND_URL && !process.env.FRONTEND_URL.includes("localhost"));
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "lax",
-      secure: false,
+      sameSite: isProd ? "none" : "lax",
+      secure: isProd,
     });
 
     res.status(200).json({
@@ -89,10 +90,11 @@ commonRouter.get(
 
 //  LOGOUT 
 commonRouter.get("/logout", (req, res) => {
+  const isProd = process.env.NODE_ENV === "production" || (process.env.FRONTEND_URL && !process.env.FRONTEND_URL.includes("localhost"));
   res.clearCookie("token", {
     httpOnly: true,
-    secure: false,
-    sameSite: "lax",
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
   });
 
   res.status(200).json({
