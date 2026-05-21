@@ -46,6 +46,23 @@ app.use(
       // allow explicit configured origins
       if (allowedOrigins.includes(origin)) return cb(null, true);
 
+      // allow matching hostname of FRONTEND_URL (handles missing https:// protocols, trailing slashes, etc.)
+      try {
+        const parsed = new URL(origin);
+        if (process.env.FRONTEND_URL) {
+          let frontendHost = process.env.FRONTEND_URL;
+          if (!frontendHost.startsWith("http://") && !frontendHost.startsWith("https://")) {
+            frontendHost = "https://" + frontendHost;
+          }
+          const parsedFrontend = new URL(frontendHost);
+          if (parsed.hostname === parsedFrontend.hostname) {
+            return cb(null, true);
+          }
+        }
+      } catch (e) {
+        // ignore parse errors
+      }
+
       // allow any localhost port (vite may pick different ports like 5173/5174/5175)
       try {
         const parsed = new URL(origin);
