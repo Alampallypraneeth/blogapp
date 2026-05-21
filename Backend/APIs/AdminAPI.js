@@ -1,6 +1,6 @@
 import exp from 'express'
 import { verifyToken } from '../middlewares/verifyTokens.js'
-import { checkAuthor } from '../middlewares/checkAuthor.js'
+import { checkAuthor } from '../middlewares/checkauthor.js'
 import { UserTypeModel } from '../Models/UserModel.js'
 export const  adminRoute=exp.Router()
 
